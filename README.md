@@ -1,2 +1,2 @@
-# rule_building_algorithm
-Goal: create a technique to simplify the rule building process. 
+# Rule Building Algorithm
+Goal: to create a technique that can test/improve rules.
