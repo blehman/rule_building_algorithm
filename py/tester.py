@@ -17,8 +17,15 @@ def base_predictor_info():
             cluster = str(rec[0])
             label = rec[1]
             predictors = rec[2].split(',')
-            infoStore[cluster] = {"label":label, "predictors":predictors, "success":0, "fail":0}
+            infoStore[cluster] = {
+                    "label":label
+                    , "predictors":predictors
+                    , "success":0
+                    , "fail":0
+                    , "counts":{str(x):0 for x in range(0,15)}
+                    }
     return infoStore
+
 
 if __name__ == '__main__':
 
@@ -53,14 +60,15 @@ if __name__ == '__main__':
         # sort votes
         sorted_votes = sorted(votes.items(), key=operator.itemgetter(1), reverse = True)
 
-        # check truth 
+        # remove ties
         if sorted_votes[0][1] != sorted_votes[1][1]:
             clusterValue = sorted_votes[0][0]
+            infoStore[cluster]["counts"][clusterValue]+=1
+            # count successes and failures
             if cluster == clusterValue: 
                 infoStore[cluster]["success"]+=1
             else:
                 infoStore[cluster]["fail"]+=1
-
     print pprint(infoStore)
-
-
+    with open('rdata/counts.json','wb') as c:
+        c.write(json.dumps(infoStore))
