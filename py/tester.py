@@ -10,7 +10,7 @@ infoStore = {}
 def base_predictor_info():
     with open('data/clusterPredictors.tsv') as p:
         """
-        Loads the prediction classes
+        Loads the prediction classes and initalizes infoStore
         """
         for line in p.readlines():
             rec = line.strip().split('\t')
@@ -36,9 +36,7 @@ if __name__ == '__main__':
         # initializes the votes based on 15 clusters
         votes = {str(x):0 for x in range(0,15)}
 
-        # data: 
-        # 10|Learning Strategist, Writer, OD Pro. Founder of ADVANCErva. Interested in what's next.
-        # 10|Attorney & sorcerer -  can I get a witness? 
+        # data 
         rec = line.decode('utf-8').strip().split('|')
 
         # assign current cluster
@@ -53,7 +51,7 @@ if __name__ == '__main__':
         # loop through all clusters
         for clusterCheck in infoStore:
 
-            # loop through all the 
+            # loop through all the predictive terms
             for predictor in infoStore[clusterCheck]["predictors"]:
                 if predictor in bio:
                     votes[clusterCheck]+=1
