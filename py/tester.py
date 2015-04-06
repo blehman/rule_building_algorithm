@@ -7,6 +7,10 @@ import operator
 from pprint import *
 
 infoStore = {}
+
+from collections import Counter, defaultdict
+alt_calc=defaultdict(lambda: defaultdict(int))
+
 def base_predictor_info():
     with open('data/clusterPredictors.tsv') as p:
         """
@@ -28,7 +32,6 @@ def base_predictor_info():
 
 
 if __name__ == '__main__':
-
     infoStore = base_predictor_info()
     #print pprint(infoStore)
     for line in sys.stdin:
@@ -57,6 +60,13 @@ if __name__ == '__main__':
                     votes[clusterCheck]+=1
         # sort votes
         sorted_votes = sorted(votes.items(), key=operator.itemgetter(1), reverse = True)
+        
+        #SN edits - calc matches for correct rule, apply other rules as exclusions
+        right_votes=votes[cluster]
+        wrong_votes = sum([votes[i] for i in votes.keys() if i !=cluster])
+        alt_calc[cluster]['total']+=1
+        if right_votes>0 and wrong_votes==0:
+            alt_calc[cluster]['correct']+=1
 
         # remove ties
         if sorted_votes[0][1] != sorted_votes[1][1]:
@@ -67,6 +77,7 @@ if __name__ == '__main__':
                 infoStore[cluster]["success"]+=1
             else:
                 infoStore[cluster]["fail"]+=1
-    print pprint(infoStore)
-    with open('rdata/counts.json','wb') as c:
-        c.write(json.dumps(infoStore))
+    print alt_calc
+    #print pprint(infoStore)
+    #with open('rdata/counts.json','wb') as c:
+    #    c.write(json.dumps(infoStore))
